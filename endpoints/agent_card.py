@@ -14,10 +14,19 @@ async def get_agent_card(request: Request):
         "version": "1.0.0",
         "supportedInterfaces": [
             {
-                "type": "responses",
-                "url": f"{base_url}/responses"
+                "type": "open-responses",
+                "url": f"{base_url}/responses",
+                "specification": "openai-responses"
             }
         ],
+        "authentication": {
+            "type": "bearer",
+            "scheme": "bearer",
+            "description": "Use Authorization: Bearer <token>"
+        } if settings.auth_token else None,
         "defaultInputModes": ["text"],
-        "defaultOutputModes": ["text"]
+        "defaultOutputModes": ["text"],
+        "endpoints": {
+            "responses": "/responses"
+        }
     }
