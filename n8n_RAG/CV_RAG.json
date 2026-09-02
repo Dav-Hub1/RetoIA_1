@@ -1,0 +1,1083 @@
+{
+  "name": "CV_RAG",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "deepseek-v4-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        272,
+        256
+      ],
+      "id": "d20020e7-a5f2-4e0d-a2cd-899f02d9cc45",
+      "name": "DeepSeek Chat Model for Extracting",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "DyQ2RNpN0AkHjTer",
+          "name": "Davichon's account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.cv }}",
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"full_name\": {\n      \"type\": \"string\",\n      \"description\": \"Full name of the candidate\"\n    },\n    \"professional_identity\": {\n      \"type\": \"string\",\n      \"description\": \"One sentence that captures who David is professionally (e.g., 'Physicist-turned-AI Solutions Engineer who automates business processes for microenterprises')\"\n    },\n    \"professional_summary\": {\n      \"type\": \"string\",\n      \"description\": \"2-3 sentences synthesizing his unique value: physics PhD + AI engineering + business automation + microenterprise expertise\"\n    },\n    \"core_competencies\": {\n      \"type\": \"array\",\n      \"description\": \"5-8 high-level competencies that define his professional profile\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"competency\": { \"type\": \"string\" },\n          \"origin\": { \"type\": \"string\", \"description\": \"Where he developed this (PhD, AI Trainer, Co-Founder)\" },\n          \"business_value\": { \"type\": \"string\", \"description\": \"How this helps businesses/employers\" }\n        }\n      }\n    },\n    \"business_domains\": {\n      \"type\": \"array\",\n      \"description\": \"Industries/domains where he has applied AI and automation\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"domain\": { \"type\": \"string\", \"description\": \"e.g., Accounting, Clinical Records, Legal, Customer Support\" },\n          \"applications\": { \"type\": \"array\", \"items\": { \"type\": \"string\" }, \"description\": \"Specific solutions he built\" },\n          \"technologies_used\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } }\n        }\n      }\n    },\n    \"ai_engineering_skills\": {\n      \"type\": \"array\",\n      \"description\": \"Specific AI/automation technical capabilities\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"skill_area\": { \"type\": \"string\", \"description\": \"e.g., Agentic AI, RAG, Workflow Automation\" },\n          \"tools\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } },\n          \"proficiency_level\": { \"type\": \"string\", \"enum\": [\"Basic\", \"Intermediate\", \"Advanced\", \"Expert\"] }\n        }\n      }\n    },\n    \"research_background\": {\n      \"type\": \"object\",\n      \"description\": \"PhD research summarized for non-physicists\",\n      \"properties\": {\n        \"field\": { \"type\": \"string\" },\n        \"thesis_title\": { \"type\": \"string\" },\n        \"institution\": { \"type\": \"string\" },\n        \"key_contribution\": { \"type\": \"string\", \"description\": \"What he discovered/achieved in plain language\" },\n        \"transferable_skills\": { \"type\": \"array\", \"items\": { \"type\": \"string\" }, \"description\": \"Skills from PhD that apply to AI/tech\" }\n      }\n    },\n    \"ai_training_experience\": {\n      \"type\": \"object\",\n      \"description\": \"Experience as AI Trainer at Outlier AI\",\n      \"properties\": {\n        \"focus_areas\": { \"type\": \"array\", \"items\": { \"type\": \"string\" }, \"description\": \"What he taught models\" },\n        \"methodologies\": { \"type\": \"array\", \"items\": { \"type\": \"string\" }, \"description\": \"How he calibrated/taught models\" },\n        \"skills_demonstrated\": { \"type\": \"array\", \"items\": { \"type\": \"string\" }, \"description\": \"Skills gained from this experience\" }\n      }\n    },\n    \"microenterprise_expertise\": {\n      \"type\": \"object\",\n      \"description\": \"Knowledge of small business needs and how AI helps them\",\n      \"properties\": {\n        \"pain_points_addressed\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } },\n        \"solutions_deployed\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } },\n        \"industries_served\": { \"type\": \"array\", \"items\": { \"type\": \"string\" } }\n      }\n    },\n    \"soft_skills\": {\n      \"type\": \"array\",\n      \"description\": \"Soft skills with evidence\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"skill\": { \"type\": \"string\" },\n          \"evidence\": { \"type\": \"string\" }\n        }\n      }\n    },\n    \"value_proposition\": {\n      \"type\": \"string\",\n      \"description\": \"One powerful sentence for recruiters: what makes David unique\"\n    },\n    \"keywords_for_search\": {\n      \"type\": \"array\",\n      \"description\": \"15-20 keywords that best represent his profile for RAG search\",\n      \"items\": { \"type\": \"string\" }\n    }\n  },\n  \"required\": [\n    \"full_name\",\n    \"professional_identity\",\n    \"professional_summary\",\n    \"core_competencies\",\n    \"ai_engineering_skills\",\n    \"research_background\",\n    \"value_proposition\",\n    \"keywords_for_search\"\n  ]\n}",
+        "options": {
+          "systemPromptTemplate": "=# Context\nYou are a multidisciplinary expert in:\n1. **Physics** (Thermal Field Theory, Quark-Gluon Plasma) - to understand David's PhD research.\n2. **AI Engineering** (Pydantic AI, LangGraph, RAG, Agentic AI) - to assess his technical depth.\n3. **Business Automation** (n8n, workflow orchestration, CRM integration) - to understand his solutions.\n4. **Microenterprise Consulting** - to appreciate how AI transforms small businesses.\n5. **Pedagogy & AI Training** (calibrating LLMs, teaching models to reason) - for his AI Trainer experience.\n\nYou analyze CVs with the ability to interpret academic achievements, business automation projects, and AI training experience into a compelling professional profile.\n\n# Mission\nExtract and **distill** David's CV into a rich profile that showcases:\n1. His unique combination of physics PhD + AI engineering + business automation.\n2. His experience applying AI to microenterprises (accounting, clinical records, legal, etc.).\n3. His ability to teach and calibrate AI models (AI Trainer experience).\n4. His international experience and soft skills.\n5. His value proposition for employers.\n\n# Rules\n1. **Interpret** academic physics into business-relevant language.\n2. **Expand** on his AI engineering projects by connecting them to real business outcomes.\n3. **Distill** complex technical work into accessible, impressive summaries.\n4. **Identify** transferable skills across physics, AI, and business.\n5. **Group** technical skills by AI/automation domain.\n6. **Infer** soft skills from concrete evidence (PhD persistence, international mobility, interdisciplinary work).\n7. Use null or empty arrays for missing information.\n8. Output ONLY valid JSON matching the schema.\n\n# Instructions\n1. Read the full CV text.\n2. Extract education, research, work experience, and skills.\n3. Create `core_competencies` that blend physics, AI, and business skills.\n4. Map his projects to `business_domains` (accounting, clinical records, legal, customer support, etc.).\n5. Detail his `ai_engineering_skills` with tools and proficiency levels.\n6. Summarize his PhD research in `research_background` with transferable skills.\n7. Describe his AI Trainer experience in `ai_training_experience`.\n8. Identify his `microenterprise_expertise` and the pain points he addresses.\n9. List soft skills with evidence.\n10. Create a powerful `value_proposition`.\n11. Generate 15-20 `keywords_for_search` that cover physics, AI, automation, and business.\n\n# Additional Context\n- David co-founded \"Automatizaciones Comerciales del Valle de México\" where he deploys AI for microenterprises.\n- His AI Trainer role involved assessing LLM reasoning on advanced physics/math tasks.\n- His PhD research: Thermal Field Theory, Quark-Gluon Plasma, Polyakov Loops, Gradient Flow.\n- Technical stack: Pydantic AI, LangGraph, n8n, SQL, JavaScript, FastAPI, RAG, Agentic AI.\n- Business domains: accounting, clinical histories, legal workflows, customer support, scheduling, document management.\n\n# Fallback\n- If information is missing, use null or empty arrays.\n- Never invent facts not present in the CV.\n- When inferring, stay grounded in evidence from the text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        48
+      ],
+      "id": "13d7a636-8d94-4a90-b713-62c37d46edf1",
+      "name": "Information Extractor",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.mistral.ai/v1/embeddings",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "input",
+              "value": "={{ $json.formatted_request.input }}"
+            },
+            {
+              "name": "model",
+              "value": "mistral-embed"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 5000
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        656,
+        240
+      ],
+      "id": "96647248-5c26-4137-8da2-aca9e6826003",
+      "name": "HTTP Request for PDF Embedding",
+      "alwaysOutputData": false,
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "dPntODM3ClpHLHWM",
+          "name": "Mistral-Embed"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.cloud.llamaindex.ai/api/v2/parse/{{ $json.job_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -464,
+        128
+      ],
+      "id": "f269e700-3f4d-4ca4-8c80-d94d31c29e42",
+      "name": "Processing Status",
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "K27NVPwrqAQnsMBm",
+          "name": "Davichon's LlamaIndex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "0eafd2eb-a692-4a14-8622-44ec42cddea1",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "COMPLETED",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -144,
+        128
+      ],
+      "id": "512e24e8-923b-42db-b68e-d2590dac8ea0",
+      "name": "If",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "amount": 1,
+        "unit": "minutes"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        48,
+        208
+      ],
+      "id": "791446db-babd-4aef-a39a-2d756657caef",
+      "name": "Wait",
+      "webhookId": "c0f32d30-dc80-4e0f-953b-1e5216b98b9a"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        464
+      ],
+      "id": "680a8361-d1a2-4872-9f68-0eca5b5eebce",
+      "name": "Wait Between Chunks",
+      "webhookId": "wait-001"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.cloud.llamaindex.ai/api/v2/parse/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            },
+            {
+              "name": "configuration",
+              "value": "={\n  \"tier\": \"agentic\",\n  \"version\": \"latest\"\n}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -784,
+        128
+      ],
+      "id": "20b385ed-a4a5-4313-8d90-83ed8c5bf21f",
+      "name": "Upload for Parsing",
+      "retryOnFail": true,
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "K27NVPwrqAQnsMBm",
+          "name": "Davichon's LlamaIndex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b6dedf51-9a23-4c68-84b1-400b1f85e076",
+              "name": "job_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "430d83ca-9e85-4565-8271-dc40c00bec2b",
+              "name": "project_id",
+              "value": "={{ $json.project_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e2eef7e5-d74e-49b0-8df1-07555b6d8bc5",
+              "name": "status",
+              "value": "={{ $json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "ca2cb75e-7edf-4eb2-a66c-d19db37259cd",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -624,
+        128
+      ],
+      "id": "0f4abc1b-e2ae-4879-8758-8df46f51e181",
+      "name": "Uploaded"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95f32495-6bde-416f-9d4f-6ef99d319722",
+              "name": "job_id",
+              "value": "={{ $json.job.id }}",
+              "type": "string"
+            },
+            {
+              "id": "8b666e58-507b-49e5-9a59-f29f094e9df8",
+              "name": "project_id",
+              "value": "={{ $json.job.project_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c9bb0f57-1e54-4e12-ad45-17e911c80450",
+              "name": "status",
+              "value": "={{ $json.job.status }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        128
+      ],
+      "id": "5ae064bd-68e9-4718-99c8-7cf6e8b39ab0",
+      "name": "Status"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.cloud.llamaindex.ai/api/v2/parse/{{ $('Status').item.json.job_id }}?expand=markdown",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        48,
+        48
+      ],
+      "id": "b4376b6e-9a58-4e5a-a43c-4185d43e83c9",
+      "name": "Download Parsing",
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "K27NVPwrqAQnsMBm",
+          "name": "Davichon's LlamaIndex account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1mLrBaPvknJpHXTcxYQAt6DLKMMjFmnhN",
+          "mode": "list",
+          "cachedResultName": "Banorte",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1mLrBaPvknJpHXTcxYQAt6DLKMMjFmnhN"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1264,
+        128
+      ],
+      "id": "09e5f219-e5d8-43f3-ac18-65dfaa7d6e4b",
+      "name": "GD Trigger for CV",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Pr6Ca2Zt9fMXck5V",
+          "name": "Davichon's account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "107f2fb2-b550-475d-9469-a303ec2cf3da",
+              "name": "file_id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1104,
+        128
+      ],
+      "id": "d92d184b-de28-42e2-8685-2215fc011e94",
+      "name": "Set CV"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.file_id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -944,
+        128
+      ],
+      "id": "43c5b4db-33b7-4004-b524-68cacd5f95a7",
+      "name": "Download CV ID",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Pr6Ca2Zt9fMXck5V",
+          "name": "Davichon's account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "195ce6b8-b32e-4b14-8230-4ce457dc0f2b",
+              "name": "cv",
+              "value": "={{ $json.markdown }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        48
+      ],
+      "id": "3bb4f711-a1a6-4ce9-8121-32378a835af3",
+      "name": "CV"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================\n// CHUNK CV DATA (ENRICHED + RAW SPLIT)\n// ============================================\n\n// Get extracted data from Information Extractor\nconst extracted = $('Information Extractor').first().json.output;\n\n// Get raw CV text from CV node (adjust field name if needed)\nconst rawCV = $('CV').first().json.cv || $('CV').first().json.markdown || '';\n\n// Helper to format lists and objects\nfunction formatList(items, separator = '\\n') {\n  if (!items || items.length === 0) return 'Not specified';\n  if (Array.isArray(items)) {\n    return items.map(item => {\n      if (typeof item === 'string') return `• ${item}`;\n      if (typeof item === 'object') {\n        return Object.entries(item).map(([k, v]) => {\n          if (Array.isArray(v)) return `  - ${k}: ${v.join(', ')}`;\n          return `  - ${k}: ${v}`;\n        }).join('\\n');\n      }\n      return String(item);\n    }).join(separator);\n  }\n  return String(items);\n}\n\n// Helper to split raw CV into overlapping chunks\nfunction splitText(text, chunkSize = 1000, overlap = 100) {\n  if (!text || text.length <= chunkSize) return [text];\n  const chunks = [];\n  let start = 0;\n  while (start < text.length) {\n    const end = Math.min(start + chunkSize, text.length);\n    chunks.push(text.substring(start, end));\n    if (end === text.length) break;\n    start = end - overlap;\n    if (start < 0) start = 0;\n    // Avoid infinite loop if chunkSize <= overlap\n    if (start === 0 && end === text.length) break;\n  }\n  return chunks;\n}\n\n// ---------- STRUCTURED CHUNKS (enriched) ----------\n\n// 1. Profile & Value Proposition\nconst profileChunk = {\n  chunk_type: 'profile_value_proposition',\n  content: `👤 PROFILE & VALUE PROPOSITION\n\nProfessional Identity:\n${extracted.professional_identity || 'Not specified'}\n\nProfessional Summary:\n${extracted.professional_summary || 'Not specified'}\n\nValue Proposition:\n${extracted.value_proposition || 'Not specified'}\n\nCore Competencies:\n${formatList(extracted.core_competencies)}\n\nSoft Skills:\n${formatList(extracted.soft_skills)}`,\n  metadata: {\n    section: 'profile',\n    fields: ['professional_identity', 'professional_summary', 'value_proposition', 'core_competencies', 'soft_skills'],\n    context_type: 'personal_profile',\n    retrieval_priority: 'high'\n  }\n};\n\n// 2. Research & Academic Background\nconst researchChunk = {\n  chunk_type: 'research_academic',\n  content: (() => {\n    const parts = [];\n    if (extracted.research_background) {\n      parts.push(`🔬 RESEARCH BACKGROUND\nField: ${extracted.research_background.field || 'N/A'}\nThesis: ${extracted.research_background.thesis_title || 'N/A'}\nInstitution: ${extracted.research_background.institution || 'N/A'}\nKey Contribution: ${extracted.research_background.key_contribution || 'N/A'}\nTransferable Skills: ${formatList(extracted.research_background.transferable_skills, ', ')}`);\n    }\n    if (extracted.education && extracted.education.length > 0) {\n      parts.push(`🎓 EDUCATION\n${extracted.education.map(edu => `${edu.degree} - ${edu.institution} (${edu.year || '?'})${edu.research_focus ? `\\n  Research Focus: ${edu.research_focus}` : ''}`).join('\\n')}`);\n    }\n    if (extracted.international_experience && extracted.international_experience.length > 0) {\n      parts.push(`🌍 INTERNATIONAL EXPERIENCE\n${extracted.international_experience.map(exp => `${exp.country} - ${exp.institution}${exp.skills_gained ? `\\n  Skills Gained: ${exp.skills_gained.join(', ')}` : ''}`).join('\\n')}`);\n    }\n    return parts.join('\\n\\n') || 'No research background available.';\n  })(),\n  metadata: {\n    section: 'academic_background',\n    fields: ['research_background', 'education', 'international_experience'],\n    context_type: 'research',\n    retrieval_priority: 'high',\n    topics: ['PhD', 'Thermal Field Theory', 'Quark-Gluon Plasma', 'Polyakov loops', 'Gradient Flow']\n  }\n};\n\n// 3. AI Engineering & Technical Skills\nconst aiSkillsChunk = {\n  chunk_type: 'ai_technical_skills',\n  content: (() => {\n    const parts = [];\n    if (extracted.ai_engineering_skills && extracted.ai_engineering_skills.length > 0) {\n      parts.push(`🤖 AI ENGINEERING SKILLS\n${extracted.ai_engineering_skills.map(skill => `${skill.skill_area} (${skill.proficiency_level || 'N/A'})\n  Tools: ${skill.tools ? skill.tools.join(', ') : 'N/A'}`).join('\\n\\n')}`);\n    }\n    if (extracted.technical_skills) {\n      parts.push(`💻 TECHNICAL SKILLS (categorized)\n${formatList(extracted.technical_skills)}`);\n    }\n    if (extracted.ai_training_experience) {\n      parts.push(`📚 AI TRAINING EXPERIENCE\nFocus Areas: ${formatList(extracted.ai_training_experience.focus_areas, ', ')}\nMethodologies: ${formatList(extracted.ai_training_experience.methodologies, ', ')}\nSkills Demonstrated: ${formatList(extracted.ai_training_experience.skills_demonstrated, ', ')}`);\n    }\n    return parts.join('\\n\\n') || 'No AI skills available.';\n  })(),\n  metadata: {\n    section: 'technical',\n    fields: ['ai_engineering_skills', 'technical_skills', 'ai_training_experience'],\n    context_type: 'skills',\n    retrieval_priority: 'high',\n    keywords: ['Pydantic AI', 'LangGraph', 'n8n', 'RAG', 'Agentic AI', 'LLM training']\n  }\n};\n\n// 4. Business Domains & Microenterprise Expertise\nconst businessChunk = {\n  chunk_type: 'business_microenterprise',\n  content: (() => {\n    const parts = [];\n    if (extracted.business_domains && extracted.business_domains.length > 0) {\n      parts.push(`🏢 BUSINESS DOMAINS\n${extracted.business_domains.map(domain => `${domain.domain}\n  Applications: ${formatList(domain.applications, ', ')}\n  Technologies: ${domain.technologies_used ? domain.technologies_used.join(', ') : 'N/A'}`).join('\\n\\n')}`);\n    }\n    if (extracted.microenterprise_expertise) {\n      parts.push(`🏪 MICROENTERPRISE EXPERTISE\nPain Points Addressed: ${formatList(extracted.microenterprise_expertise.pain_points_addressed, ', ')}\nSolutions Deployed: ${formatList(extracted.microenterprise_expertise.solutions_deployed, ', ')}\nIndustries Served: ${formatList(extracted.microenterprise_expertise.industries_served, ', ')}`);\n    }\n    if (extracted.professional_experience && extracted.professional_experience.length > 0) {\n      parts.push(`💼 PROFESSIONAL EXPERIENCE\n${extracted.professional_experience.map(exp => `${exp.role} at ${exp.company} (${exp.period || '?'})\n  Key Achievements: ${formatList(exp.key_achievements, '; ')}`).join('\\n\\n')}`);\n    }\n    return parts.join('\\n\\n') || 'No business domain information available.';\n  })(),\n  metadata: {\n    section: 'business',\n    fields: ['business_domains', 'microenterprise_expertise', 'professional_experience'],\n    context_type: 'business',\n    retrieval_priority: 'high',\n    keywords: ['microenterprise', 'automation', 'accounting', 'clinical records', 'legal', 'customer support']\n  }\n};\n\n// 5. Keywords & Search Terms\nconst keywordsChunk = {\n  chunk_type: 'keywords_search_terms',\n  content: `🔑 KEYWORDS & SEARCH TERMS\n${formatList(extracted.keywords_for_search, ', ')}`,\n  metadata: {\n    section: 'keywords',\n    fields: ['keywords_for_search'],\n    context_type: 'search',\n    retrieval_priority: 'medium'\n  }\n};\n\n// ---------- RAW CV CHUNKS (multiple) ----------\n\nconst rawChunks = splitText(rawCV, 1200, 150); // 1200 chars per chunk, 150 overlap\n\nconst rawChunkObjects = rawChunks.map((chunkText, idx) => ({\n  chunk_type: `raw_cv_part_${idx + 1}`,\n  content: chunkText,\n  metadata: {\n    section: 'raw_cv',\n    fields: ['raw_text'],\n    context_type: 'original',\n    retrieval_priority: 'low',\n    part_number: idx + 1,\n    total_raw_parts: rawChunks.length\n  }\n}));\n\n// Combine all chunks\nconst allChunks = [\n  profileChunk,\n  researchChunk,\n  aiSkillsChunk,\n  businessChunk,\n  keywordsChunk,\n  ...rawChunkObjects\n];\n\n// Set sequential chunk_index and total_chunks\nallChunks.forEach((chunk, idx) => {\n  chunk.chunk_index = idx;\n  chunk.total_chunks = allChunks.length;\n  chunk.source_file = 'CV.pdf'; // adjust as needed\n});\n\nconsole.log(`✅ Created ${allChunks.length} enriched + raw chunks for CV`);\n\nreturn allChunks.map(chunk => ({\n  json: {\n    chunk_index: chunk.chunk_index,\n    total_chunks: chunk.total_chunks,\n    chunk_type: chunk.chunk_type,\n    chunk_content: chunk.content,\n    chunk_metadata: chunk.metadata,\n    source_file: chunk.source_file\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        48
+      ],
+      "id": "5a0758d4-b102-4399-8112-62f993e03ed2",
+      "name": "Chunk CV Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format CV chunks for Mistral Embedding API\nconst chunkData = $input.all();\n\nconst formattedRequests = chunkData.map(item => {\n  return {\n    json: {\n      formatted_request: {\n        input: item.json.chunk_content,\n        model: \"mistral-embed\"\n      },\n      chunk_identifier: {\n        chunk_index: item.json.chunk_index,\n        chunk_type: item.json.chunk_type\n      },\n      original_data: item.json\n    }\n  };\n});\n\nconsole.log(`📤 Formatted ${formattedRequests.length} chunks for embedding`);\nreturn formattedRequests;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        240
+      ],
+      "id": "8f1e5f0a-4b03-4481-8f86-a2bed9d9fe92",
+      "name": "Format CV Chunks for Embedding"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================\n// PREPARE CV DATA FOR SUPABASE\n// Combine embeddings with chunk data and full extracted CV\n// ============================================\n\nconst httpResponses = $input.all();\nconsole.log(`🔍 Processing ${httpResponses.length} embedding responses for CV chunks`);\n\n// Filter successful embedding responses\nconst successfulResponses = httpResponses.filter(response => {\n    const isError = response.error || \n                    (response.json && response.json.error) ||\n                    (response.statusCode && response.statusCode >= 400);\n    if (isError) {\n        console.warn(`⚠️ Skipping error response:`, response.error || response.json?.error);\n        return false;\n    }\n    const hasEmbedding = response?.json?.data?.[0]?.embedding;\n    if (!hasEmbedding) {\n        console.warn(`⚠️ Skipping response without embedding`);\n        return false;\n    }\n    return true;\n});\n\nconsole.log(`✅ Filtered to ${successfulResponses.length} successful responses`);\n\n// Get original chunk data from the formatting node\nconst formatNode = $('Format CV Chunks for Embedding');\nif (!formatNode || !formatNode.all) {\n    throw new Error('❌ Cannot access Format CV Chunks for Embedding node');\n}\nconst formatItems = formatNode.all();\nconsole.log(`🔍 Found ${formatItems.length} chunks from Format CV Chunks for Embedding`);\n\n// Get full extracted CV data\nconst cvData = $('Information Extractor').first().json.output;\n\n// Process each successful embedding response\nconst results = successfulResponses.map((httpResponse, index) => {\n    const embedding = httpResponse.json.data[0].embedding;\n    if (embedding.length !== 1024) {\n        console.warn(`⚠️ Unexpected embedding dimension: ${embedding.length} (expected 1024)`);\n    }\n\n    // Match chunk data by index\n    const chunkData = formatItems[index]?.json?.original_data;\n    if (!chunkData) {\n        throw new Error(`❌ Could not find chunk data for index ${index}`);\n    }\n\n    console.log(`✅ Processing chunk ${chunkData.chunk_index + 1}/${chunkData.total_chunks} (${chunkData.chunk_type})`);\n\n    // Build metadata: combine core chunk info + full extracted CV data (for rich retrieval)\n    const metadata = {\n        source: 'cv',\n        document_type: 'personal_cv',\n        extracted_at: new Date().toISOString(),\n        full_name: cvData.full_name,\n        current_title: cvData.current_title,\n        chunk_info: {\n            chunk_index: chunkData.chunk_index,\n            total_chunks: chunkData.total_chunks,\n            chunk_type: chunkData.chunk_type,\n            section: chunkData.chunk_metadata.section,\n            fields: chunkData.chunk_metadata.fields,\n            retrieval_priority: chunkData.chunk_metadata.retrieval_priority || 'medium',\n            context_type: chunkData.chunk_metadata.context_type || 'general'\n        },\n        cv_data: {\n            // Include all relevant extracted fields (you can restrict to what's needed)\n            education: cvData.education,\n            research_experience: cvData.research_experience,\n            publications: cvData.publications,\n            technical_skills: cvData.technical_skills,\n            soft_skills: cvData.soft_skills,\n            professional_experience: cvData.professional_experience,\n            international_mobility: cvData.international_mobility,\n            languages: cvData.languages,\n            awards_and_grants: cvData.awards_and_grants,\n            certifications: cvData.certifications,\n            projects: cvData.projects,\n            key_strengths: cvData.key_strengths\n        },\n        retrieval_optimized: true\n    };\n\n    return {\n        json: {\n            content: chunkData.chunk_content,\n            embedding: embedding,\n            metadata: metadata,\n            chunk_index: chunkData.chunk_index,\n            total_chunks: chunkData.total_chunks,\n            source_file: chunkData.source_file || 'CV.pdf'\n        }\n    };\n});\n\nconsole.log(`✅ Successfully processed ${results.length} CV chunks`);\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        848,
+        240
+      ],
+      "id": "ca9935c8-3950-4cee-abdf-e33c213f1f8a",
+      "name": "Prepare CV Data for Supabase"
+    },
+    {
+      "parameters": {
+        "tableId": "cv_analytics",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "content",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.content }}"
+            },
+            {
+              "fieldId": "embedding",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.embedding }}"
+            },
+            {
+              "fieldId": "metadata",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.metadata }}"
+            },
+            {
+              "fieldId": "chunk_index",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.chunk_index }}"
+            },
+            {
+              "fieldId": "total_chunks",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.total_chunks }}"
+            },
+            {
+              "fieldId": "source_file",
+              "fieldValue": "={{ $('Prepare CV Data for Supabase').item.json.source_file }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        656,
+        464
+      ],
+      "id": "f2eacf40-50a5-41fd-b4d3-da37bf7bdcca",
+      "name": "Insert CV Chunks in cv_analytics",
+      "credentials": {
+        "supabaseApi": {
+          "id": "fpdzciO1OqKKYS8Z",
+          "name": "Davichon's account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        480,
+        448
+      ],
+      "id": "0a4e3182-bc8b-424b-8e8c-72f3a00d40bf",
+      "name": "Loop Over CV Chunks"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        432
+      ],
+      "id": "defb0886-1f3f-4fe4-9b77-fa5743308774",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "pinData": {
+    "Information Extractor": [
+      {
+        "json": {
+          "output": {
+            "full_name": "David de la Cruz",
+            "professional_identity": "Physicist-turned-AI Solutions Engineer who automates business processes for microenterprises.",
+            "professional_summary": "David de la Cruz combines a PhD in Physics with hands-on AI engineering to design and deploy practical automation for microenterprises. As Co-Founder of Automatizaciones Comerciales del Valle de México, he builds end-to-end AI workflows using n8n, LangGraph, RAG, and CRM integrations for finance, legal, customer support, scheduling, and document management. His experience as an AI Trainer at Outlier AI and his academic research in Thermal Field Theory give him a rare blend of scientific rigor, LLM evaluation skills, and business automation expertise.",
+            "core_competencies": [
+              {
+                "competency": "Advanced Mathematical & Computational Modeling",
+                "origin": "PhD in Physics, TU Darmstadt",
+                "business_value": "Solves complex business problems with rigorous, evidence-based methods."
+              },
+              {
+                "competency": "AI Solutions Engineering",
+                "origin": "Co-Founder & AI Solutions Engineer",
+                "business_value": "Designs and deploys end-to-end AI-driven workflow architectures that automate operations."
+              },
+              {
+                "competency": "Workflow Automation & CRM Integration",
+                "origin": "Co-Founder & AI Trainer at Outlier AI",
+                "business_value": "Connects AI agents and RAG systems to everyday business tools like Kommo CRM and Meta Tech Provider."
+              },
+              {
+                "competency": "LLM Evaluation & Alignment",
+                "origin": "AI Trainer at Outlier AI",
+                "business_value": "Ensures AI outputs are logically consistent, reliable, and aligned with business needs."
+              },
+              {
+                "competency": "Microenterprise Digital Transformation",
+                "origin": "Co-Founder of Automatizaciones Comerciales del Valle de México",
+                "business_value": "Makes advanced AI automation accessible and affordable for small businesses."
+              },
+              {
+                "competency": "Scientific Research & Analysis",
+                "origin": "PhD in Physics, TU Darmstadt",
+                "business_value": "Brings deep analytical rigor and systematic problem-solving to AI and business projects."
+              },
+              {
+                "competency": "Cross-Cultural & Multilingual Communication",
+                "origin": "International experience in Mexico and Germany",
+                "business_value": "Bridges international teams, clients, and technical documentation across English, German, and Spanish."
+              }
+            ],
+            "business_domains": [
+              {
+                "domain": "Financial Processes / Accounting",
+                "applications": [
+                  "AI automation of financial workflows",
+                  "Intelligent document parsing for financial processes"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "LangGraph",
+                  "RAG",
+                  "Pydantic AI",
+                  "Intelligent agents"
+                ]
+              },
+              {
+                "domain": "Legal Workflows",
+                "applications": [
+                  "Automated legal document workflows",
+                  "Retrieval-augmented generation for legal documents"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "LangGraph",
+                  "RAG",
+                  "Pydantic AI"
+                ]
+              },
+              {
+                "domain": "Customer Support",
+                "applications": [
+                  "AI-powered customer support automation",
+                  "Intelligent agents for common inquiries"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "LangGraph",
+                  "Intelligent agents",
+                  "Kommo CRM"
+                ]
+              },
+              {
+                "domain": "Scheduling",
+                "applications": [
+                  "Automated scheduling workflows"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "LangGraph",
+                  "APIs"
+                ]
+              },
+              {
+                "domain": "Document Management",
+                "applications": [
+                  "Parsing pipelines for document processing",
+                  "RAG systems for document retrieval and summarization"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "LangGraph",
+                  "RAG",
+                  "Parsing pipelines"
+                ]
+              },
+              {
+                "domain": "Healthcare / Clinical Records",
+                "applications": [
+                  "Clinical history management and retrieval workflows"
+                ],
+                "technologies_used": [
+                  "n8n",
+                  "RAG",
+                  "Pydantic AI"
+                ]
+              }
+            ],
+            "ai_engineering_skills": [
+              {
+                "skill_area": "Agentic AI Development",
+                "tools": [
+                  "Pydantic AI",
+                  "LangGraph",
+                  "Intelligent agents"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "Workflow Orchestration",
+                "tools": [
+                  "n8n",
+                  "LangGraph"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "Retrieval-Augmented Generation (RAG)",
+                "tools": [
+                  "RAG pipelines",
+                  "Parsing pipelines"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "CRM & API Integration",
+                "tools": [
+                  "Kommo CRM",
+                  "Meta Tech Provider",
+                  "REST APIs"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "LLM Evaluation & Alignment",
+                "tools": [
+                  "Human-in-the-loop evaluation",
+                  "Prompt evaluation",
+                  "Logical consistency assessment"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "Scientific Computing",
+                "tools": [
+                  "Python",
+                  "Mathematica"
+                ],
+                "proficiency_level": "Advanced"
+              },
+              {
+                "skill_area": "Backend & Integration Development",
+                "tools": [
+                  "FastAPI",
+                  "JavaScript",
+                  "SQL"
+                ],
+                "proficiency_level": "Intermediate"
+              }
+            ],
+            "research_background": {
+              "field": "Thermal Field Theory / Quark-Gluon Plasma",
+              "thesis_title": "Field Strengths on a Polyakov Loop at NLO with Gradient Flow.",
+              "institution": "TU Darmstadt",
+              "key_contribution": "Characterized the Quark-Gluon Plasma using advanced Thermal Field Theory techniques and computed field strengths on a Polyakov loop at next-to-leading order with Gradient Flow.",
+              "transferable_skills": [
+                "Advanced mathematical modeling",
+                "Computational physics",
+                "Data analysis and numerical simulation",
+                "Complex problem-solving",
+                "Scientific writing and documentation",
+                "Teaching and mentoring",
+                "High-dimensional data handling",
+                "Systematic research methodology"
+              ]
+            },
+            "ai_training_experience": {
+              "focus_areas": [
+                "LLM reasoning on advanced physics and mathematics tasks",
+                "Identifying logical inconsistencies and edge cases",
+                "Human-in-the-loop model evaluation and alignment workflows"
+              ],
+              "methodologies": [
+                "Human-in-the-loop evaluation",
+                "Specialized instruction in agentic AI systems",
+                "Workflow automation training",
+                "API connection and CRM integration training",
+                "Pydantic-based validation pipeline training"
+              ],
+              "skills_demonstrated": [
+                "LLM evaluation and quality assessment",
+                "Logical analysis and edge-case identification",
+                "Model alignment support",
+                "Agentic AI system understanding",
+                "Workflow automation",
+                "API and CRM integration"
+              ]
+            },
+            "microenterprise_expertise": {
+              "pain_points_addressed": [
+                "Manual and time-consuming financial processes",
+                "Inefficient legal document workflows",
+                "High customer support workload",
+                "Scheduling overhead",
+                "Disorganized document management",
+                "Lack of affordable AI integration for small businesses"
+              ],
+              "solutions_deployed": [
+                "End-to-end AI-driven workflow architectures",
+                "Intelligent agents for repetitive tasks",
+                "Parsing pipelines for document processing",
+                "Retrieval-augmented generation (RAG) systems",
+                "CRM integration with Kommo",
+                "Meta Tech Provider solutions"
+              ],
+              "industries_served": [
+                "Finance and accounting",
+                "Legal services",
+                "Customer support",
+                "Healthcare / clinical records",
+                "Document management",
+                "Microenterprises"
+              ]
+            },
+            "soft_skills": [
+              {
+                "skill": "Resilience",
+                "evidence": "Explicitly listed as a social skill; completed a rigorous multi-year international PhD."
+              },
+              {
+                "skill": "Solidarity and teamwork",
+                "evidence": "Listed as a social skill; tutored and evaluated MSc students at TU Darmstadt."
+              },
+              {
+                "skill": "Analytical thinking",
+                "evidence": "PhD research in advanced physics and AI Trainer role evaluating LLM reasoning and edge cases."
+              },
+              {
+                "skill": "Cross-cultural communication",
+                "evidence": "Fluent Spanish, C1 English, B1 German; worked in Mexico and Germany; communicates with international teams."
+              },
+              {
+                "skill": "Teaching and mentoring",
+                "evidence": "Tutored and evaluated M.Sc. students in advanced physics at TU Darmstadt."
+              },
+              {
+                "skill": "Entrepreneurial mindset",
+                "evidence": "Co-founded Automatizaciones Comerciales del Valle de México and built AI solutions for small businesses."
+              },
+              {
+                "skill": "Adaptability",
+                "evidence": "Transitioned from academic physics to AI engineering and business automation; works across Windows, Linux, and macOS."
+              }
+            ],
+            "value_proposition": "A physics PhD who turns deep analytical training into practical AI automation, helping small businesses cut manual work and scale through reliable, custom-built agentic and RAG systems.",
+            "keywords_for_search": [
+              "Physics PhD",
+              "AI Solutions Engineer",
+              "Workflow Automation",
+              "Agentic AI",
+              "RAG",
+              "LLM Evaluation",
+              "AI Trainer",
+              "n8n",
+              "LangGraph",
+              "Pydantic AI",
+              "CRM Integration",
+              "Microenterprise Automation",
+              "Thermal Field Theory",
+              "Quark-Gluon Plasma",
+              "Polyakov Loop",
+              "Python",
+              "Business Process Automation",
+              "Financial Process Automation",
+              "Legal Workflow Automation",
+              "Document Management"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "DeepSeek Chat Model for Extracting": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Information Extractor": {
+      "main": [
+        [
+          {
+            "node": "Chunk CV Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request for PDF Embedding": {
+      "main": [
+        [
+          {
+            "node": "Prepare CV Data for Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processing Status": {
+      "main": [
+        [
+          {
+            "node": "Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Download Parsing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Processing Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Between Chunks": {
+      "main": [
+        [
+          {
+            "node": "Loop Over CV Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload for Parsing": {
+      "main": [
+        [
+          {
+            "node": "Uploaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uploaded": {
+      "main": [
+        [
+          {
+            "node": "Processing Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Status": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Parsing": {
+      "main": [
+        [
+          {
+            "node": "CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GD Trigger for CV": {
+      "main": [
+        [
+          {
+            "node": "Set CV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set CV": {
+      "main": [
+        [
+          {
+            "node": "Download CV ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download CV ID": {
+      "main": [
+        [
+          {
+            "node": "Upload for Parsing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CV": {
+      "main": [
+        [
+          {
+            "node": "Information Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chunk CV Data": {
+      "main": [
+        [
+          {
+            "node": "Format CV Chunks for Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format CV Chunks for Embedding": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request for PDF Embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare CV Data for Supabase": {
+      "main": [
+        [
+          {
+            "node": "Loop Over CV Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert CV Chunks in cv_analytics": {
+      "main": [
+        [
+          {
+            "node": "Wait Between Chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over CV Chunks": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert CV Chunks in cv_analytics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3a8d775b-31f7-46c1-88b0-b66f1ae2f208",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a722b181c4e1e7c4940b0f532833b03f06d4a3517ba0bc16dec07054a21b58b9"
+  },
+  "nodeGroups": [],
+  "id": "G45u6GysO4eOGuWY",
+  "tags": []
+}
