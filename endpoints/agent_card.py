@@ -9,22 +9,26 @@ async def get_agent_card(request: Request):
 
     # Build the response dictionary
     response = {
+        "protocolVersion": "1.1.2",  # Ajusta según tu versión de A2A
         "name": settings.agent_name,
         "description": settings.agent_description,
         "url": base_url,
         "version": "1.0.0",
         "supportedInterfaces": [
             {
-                "type": "open-responses",
                 "url": f"{base_url}/responses",
-                "specification": "openai-responses"
+                "protocolBinding": "http",  # o "JSONRPC" según tu implementación
+                "protocolVersion": "open-responses"
             }
         ],
+        "capabilities": {
+            "streaming": False,
+            "pushNotifications": False,
+            "stateful": True
+        },
         "defaultInputModes": ["text"],
         "defaultOutputModes": ["text"],
-        "endpoints": {
-            "responses": "/responses"
-        }
+        "skills": []
     }
     
     # Only add authentication if token is configured

@@ -17,7 +17,7 @@ class SupabaseService:
         return self.client
 
     def connect_admin(self) -> Client:
-        """Cliente admin (service_role key) - omite RLS"""
+        """Cliente admin (service_role key)"""
         if not self.admin_client:
             self.admin_client = create_client(self.url, self.service_key)
         return self.admin_client

@@ -7,3 +7,4 @@ pydantic-ai
 pydantic-settings
 openai
 requests
+a2a-sdk

@@ -7,10 +7,9 @@ from services.supabase_client import supabase_service
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    supabase_service.connect()
+    supabase_service.connect_admin()
     yield
-    # Shutdown (opcional)
-    # Aquí puedes cerrar conexiones si es necesario
+    # Shutdown
 
 app = FastAPI(title="Manager", lifespan=lifespan)
 
