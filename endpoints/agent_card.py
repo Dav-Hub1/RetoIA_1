@@ -9,7 +9,7 @@ async def get_agent_card(request: Request):
 
     # Build the response dictionary
     response = {
-        "protocolVersion": "1.1.2",  # Ajusta según tu versión de A2A
+        "protocolVersion": "1.1.2",
         "name": settings.agent_name,
         "description": settings.agent_description,
         "url": base_url,
@@ -17,7 +17,7 @@ async def get_agent_card(request: Request):
         "supportedInterfaces": [
             {
                 "url": f"{base_url}/responses",
-                "protocolBinding": "http",  # o "JSONRPC" según tu implementación
+                "protocolBinding": "http",
                 "protocolVersion": "open-responses"
             }
         ],
