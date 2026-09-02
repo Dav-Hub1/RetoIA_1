@@ -11,31 +11,13 @@ async def get_agent_card(request: Request):
         "name": settings.agent_name,
         "description": settings.agent_description,
         "url": base_url,
-        "provider": {
-            "organization": "David de la Cruz",
-            "url": base_url
-        },
         "version": "1.0.0",
         "supportedInterfaces": [
             {
                 "type": "responses",
-                "url": f"{base_url}/responses",
-                "specification": "openai-responses",
-                "capabilities": {
-                    "streaming": False,
-                    "pushNotifications": False,
-                    "stateful": True
-                }
+                "url": f"{base_url}/responses"
             }
         ],
-        "authentication": {
-            "type": "bearer",
-            "scheme": "bearer",
-            "description": "Use Authorization: Bearer <token>"
-        } if settings.auth_token else None,
         "defaultInputModes": ["text"],
-        "defaultOutputModes": ["text"],
-        "endpoints": {
-            "responses": "/responses"
-        }
+        "defaultOutputModes": ["text"]
     }
