@@ -9,34 +9,26 @@ async def get_agent_card(request: Request):
 
     # Build the response dictionary
     response = {
-        "protocolVersion": "1.1.2",
         "name": settings.agent_name,
         "description": settings.agent_description,
         "url": base_url,
         "version": "1.0.0",
         "supportedInterfaces": [
             {
+                "type": "open-responses",           # ← indica claramente Open Responses
                 "url": f"{base_url}/responses",
-                "protocolBinding": "http",
-                "protocolVersion": "open-responses"
+                "specification": "openai-responses"
             }
         ],
-        "capabilities": {
-            "streaming": False,
-            "pushNotifications": False,
-            "stateful": True
-        },
         "defaultInputModes": ["text"],
-        "defaultOutputModes": ["text"],
-        "skills": []
+        "defaultOutputModes": ["text"]
     }
-    
-    # Only add authentication if token is configured
+
     if settings.auth_token:
         response["authentication"] = {
             "type": "bearer",
             "scheme": "bearer",
             "description": "Use Authorization: Bearer <token>"
         }
-    
+
     return response
