@@ -7,7 +7,8 @@ router = APIRouter()
 async def get_agent_card(request: Request):
     base_url = str(request.base_url).rstrip("/")
 
-    return {
+    # Build the response dictionary
+    response = {
         "name": settings.agent_name,
         "description": settings.agent_description,
         "url": base_url,
@@ -19,14 +20,19 @@ async def get_agent_card(request: Request):
                 "specification": "openai-responses"
             }
         ],
-        "authentication": {
-            "type": "bearer",
-            "scheme": "bearer",
-            "description": "Use Authorization: Bearer <token>"
-        } if settings.auth_token else None,
         "defaultInputModes": ["text"],
         "defaultOutputModes": ["text"],
         "endpoints": {
             "responses": "/responses"
         }
     }
+    
+    # Only add authentication if token is configured
+    if settings.auth_token:
+        response["authentication"] = {
+            "type": "bearer",
+            "scheme": "bearer",
+            "description": "Use Authorization: Bearer <token>"
+        }
+    
+    return response
